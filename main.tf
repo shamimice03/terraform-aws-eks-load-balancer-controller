@@ -11,9 +11,8 @@ locals {
   // arn:aws:iam::442472969547:oidc-provider/oidc.eks.ap-northeast-1.amazonaws.com/id/B7AF2E49EC3KK282KAFAFT55B21CA053
   oidc_provider_arn = "arn:aws:iam::${local.account_id}:oidc-provider/${local.oidc_provider}"
 
-  policy_arn = var.create_policy ? aws_iam_policy.aws_lbc_policy[0].arn : var.iam_policy_ar
+  policy_arn = var.create_policy ? aws_iam_policy.aws_lbc_policy[0].arn : var.iam_policy_arn
   
-  irsa_role_name = 
 
 }
 
