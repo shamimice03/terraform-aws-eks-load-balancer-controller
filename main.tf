@@ -11,14 +11,21 @@ locals {
   // arn:aws:iam::442472969547:oidc-provider/oidc.eks.ap-northeast-1.amazonaws.com/id/B7AF2E49EC3KK282KAFAFT55B21CA053
   oidc_provider_arn = "arn:aws:iam::${local.account_id}:oidc-provider/${local.oidc_provider}"
 
-  policy_arn = var.create_policy ? aws_iam_policy.aws_lbc_policy[0].arn : var.iam_policy_arn
+  policy_arn = var.create_policy ? aws_iam_policy.aws_lbc_policy[0].arn : var.iam_policy_ar
+  
+  irsa_role_name = 
 
 }
 
 
-output "identity-oidc-arn" {
+output "oidc-arn" {
+  description = "OIDC Provider ARN"
   value = local.oidc_provider_arn
 }
+
+######################################################
+#  Create IAM Role for Service Account using module  #
+######################################################
 
 module "irsa" {
   source = "shamimice03/eks-irsa/aws"
@@ -40,11 +47,6 @@ module "irsa" {
 }
 
 
-
-# #     name = "image.repository"
-#     value = "602401143452.dkr.ecr.us-east-1.amazonaws.com/amazon/aws-load-balancer-controller" 
-
-
 ######################################################
 #  Install AWS Load Balancer Controller using HELM   #
 ######################################################
@@ -54,7 +56,7 @@ locals {
   helm_namespace       = false
 
   vpc_id = data.aws_eks_cluster.cluster.vpc_config[0].vpc_id
-
+  
   # arn:aws:eks:ap-northeast-1:391178969547:cluster/eks-cluster
   region = split(":", data.aws_eks_cluster.cluster.arn)[3]
 
@@ -69,16 +71,13 @@ locals {
   })
 }
 
-# The deep_merge_yaml data source accepts a list of YAML strings as input 
-# and deep merges into a single YAML string as output.
+# The deep_merge_yaml data source accepts a list of YAML strings as input and
+# deep merges into a single YAML string as output
 data "utils_deep_merge_yaml" "values" {
   input = [local.values]
 }
 
-# output "check" {
-#   value = data.utils_deep_merge_yaml.values.output
-# }
-
+# Create a Helm Release
 resource "helm_release" "aws_loadbalancer_controller" {
 
   count = var.enable_lbc ? 1 : 0
@@ -131,7 +130,7 @@ resource "helm_release" "aws_loadbalancer_controller" {
   depends_on = [module.irsa]
 }
 
-output "helm_output" {
-  value = helm_release.aws_loadbalancer_controller
-  sensitive = true
-}
+# output "helm_output" {
+#   value = helm_release.aws_loadbalancer_controller
+#   sensitive = true
+# }

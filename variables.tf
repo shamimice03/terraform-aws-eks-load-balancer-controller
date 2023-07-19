@@ -10,7 +10,7 @@ variable "enable_lbc" {
   default     = true
 }
 
-variable "policy_name" {
+variable "policy_name_prefix" {
   description = "Name of the irsa role"
   type        = string
   default     = "aws-lbc-policy"

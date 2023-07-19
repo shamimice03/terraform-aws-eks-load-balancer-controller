@@ -117,3 +117,24 @@ without_deep_merge_yaml = <<EOT
 
 EOT
 ```
+
+### Last time: success
+```
+cluster_name   = "eks-cluster"
+irsa_role_name = "AWSLoadBalancerControllerRole"
+create_policy  = true
+policy_name    = "aws-lbc-policy"
+
+# Provide policy arn of aws managed or manually create policy for aws load balancer controller
+# iam_policy_arn    = "arn:aws:iam::391178969547:policy/AWS-LoadBalancer-Controller-Policy" 
+
+create_namespace = false
+namespace        = "kube-system"
+serviceaccount   = "cluster-autoscaler-sa"
+
+chart_repo    = "https://aws.github.io/eks-charts"
+chart_name    = "aws-load-balancer-controller"
+release_name  = "aws-load-balancer-controller"
+chart_version = "1.5.5"
+
+```

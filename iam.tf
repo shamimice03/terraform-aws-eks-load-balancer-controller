@@ -250,7 +250,7 @@ data "aws_iam_policy_document" "policy" {
 
 resource "aws_iam_policy" "aws_lbc_policy" {
   count       = var.create_policy ? 1 : 0
-  name_prefix = var.policy_name
+  name_prefix = var.policy_name_prefix
   path        = "/"
   description = "Policy for aws loadbalancer controller"
   policy      = data.aws_iam_policy_document.policy[0].json
